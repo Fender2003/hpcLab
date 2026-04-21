@@ -1,5 +1,5 @@
-# gpu-programming
-The goal of this lab is to develop a deep understanding of the fundamental architectural differences between GPUs and CPUs and to observe how these differences impact performance.
+# GPUs vs CPUs (lab 3: architecture and performance revisited)
+The goal of this lab is to develop a deeper understanding of the fundamental architectural differences between GPUs and CPUs and to observe how these differences impact performance.
 
 ## Tasks (system info)
 1. GPU architecture: ...
