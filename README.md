@@ -10,7 +10,7 @@ The goal of this lab is to develop a deeper understanding of the fundamental arc
 
 ## Tasks (performance)
 1. Compile and run addition
-2. Measure execution time GPU (hint: `cudaEvent_t start, stop;` \n `cudaEventCreate(&start);`
+2. Measure execution time GPU (hint: `cudaEvent_t start, stop;` \n `cudaEventCreate(&start);`)
 3. Implement CPU version
 4. Measure execution time CPU
 5. Compare CPU and GPU execution with changing block sizes (as low and as high, e.g., 512, 2048, so that you can gather performance trends) and data sizes (up to and including 50 billion)
