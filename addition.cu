@@ -16,18 +16,27 @@ int main(int argc, char* argv[]) {
     bool cpu = (argc > 1) && (argv[1][0] == 'c');
 
     // Vector size and memory size
-    long int numElements = 50000000000;
-    size_t size = numElements * sizeof(float);
+    long int numElements[4] = {500000, 5000000, 50000000, 500000000};
+    float time[4] = {0, 0,  0, 0};
+    for(int s=0; s<4; s++)
+    {
+
+    size_t size = numElements[s] * sizeof(float);
     
-    printf("Vector addition of %ld elements\n", numElements);
+    printf("Vector addition of %ld elements\n", numElements[s]);
     
     // Allocate host memory
     float *h_A = (float *)malloc(size);
     float *h_B = (float *)malloc(size);
     float *h_C = (float *)malloc(size);
+
+    /*if(h_A == NULL || h_B == NULL || h_C = NULL) {
+        fprintf(stderr, "Host memory allocation failed!\n");
+        return EXIT_FAILURE;
+    }*/
     
     // Initialize host arrays with random data
-    for (int i = 0; i < numElements; ++i) {
+    for (int i = 0; i < numElements[s]; ++i) {
         h_A[i] = rand() / (float)RAND_MAX;
         h_B[i] = rand() / (float)RAND_MAX;
     }
@@ -45,8 +54,8 @@ int main(int argc, char* argv[]) {
     cudaMemcpy(d_B, h_B, size, cudaMemcpyHostToDevice);
     
     // Launch the CUDA kernel
-    int threadsPerBlock = 2048;
-    int blocksPerGrid = (numElements + threadsPerBlock - 1) / threadsPerBlock;
+    int threadsPerBlock = 1024;
+    int blocksPerGrid = (numElements[s] + threadsPerBlock - 1) / threadsPerBlock;
     printf("CUDA kernel launch with %d blocks of %d threads\n", blocksPerGrid, threadsPerBlock);
     
     cudaEvent_t start, stop;
@@ -55,11 +64,11 @@ int main(int argc, char* argv[]) {
 
     cudaEventRecord(start);
     if(cpu) {
-        for (int i = 0; i < numElements; i++) {
+        for (int i = 0; i < numElements[s]; i++) {
             h_C[i] = h_A[i] + h_B[i];
         }
     }
-    else vectorAdd<<<blocksPerGrid, threadsPerBlock>>>(d_A, d_B, d_C, numElements);
+    else vectorAdd<<<blocksPerGrid, threadsPerBlock>>>(d_A, d_B, d_C, numElements[s]);
     cudaEventRecord(stop);
 
     cudaEventSynchronize(stop);
@@ -68,6 +77,7 @@ int main(int argc, char* argv[]) {
     cudaEventElapsedTime(&milliseconds, start, stop);
 
     printf("GPU execution time: %f ms\n", milliseconds);
+    time[s] = milliseconds;
 
     cudaEventDestroy(start);
     cudaEventDestroy(stop);
@@ -83,7 +93,7 @@ int main(int argc, char* argv[]) {
     if(!cpu) cudaMemcpy(h_C, d_C, size, cudaMemcpyDeviceToHost);
     
     // Verify the result
-    for (int i = 0; i < numElements; ++i) {
+    for (int i = 0; i < numElements[s]; ++i) {
         if (fabs(h_A[i] + h_B[i] - h_C[i]) > 1e-5) {
             fprintf(stderr, "Result verification failed at element %d!\n", i);
             exit(EXIT_FAILURE);
@@ -102,5 +112,11 @@ int main(int argc, char* argv[]) {
     free(h_C);
     
     printf("Done\n");
+
+    }
+
+
+    for(int i=0; i<4; i++)
+        printf("%f: ", time[i]);
     return 0;
 } 
