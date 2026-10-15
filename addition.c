@@ -2,20 +2,35 @@
 #include <time.h>
 #include <stdlib.h>
 
-int main(){
-    struct timespec ts;
-    int a[50000], b[50000];
+int main() {
+    int numElements = 5000000;
 
-    for(int i=0; i<50000; i++){
-        a[i] = rand();
-        b[i] = rand();
+    float a[numElements], b[numElements], c[numElements];
+
+    // Initialize input arrays
+    for (int i = 0; i < numElements; i++) {
+      a[i] = rand() / (float)RAND_MAX;
+        b[i] = rand() / (float)RAND_MAX;
     }
-    int c[50000] = {0};
 
-    for(int i=0; i<50000; i++){
+    // Measure CPU execution time
+    clock_t start = clock();
+
+    // Vector addition on CPU
+    for (int i = 0; i < numElements; i++) {
         c[i] = a[i] + b[i];
     }
 
-    printf('%d\n', c[0]);
+    clock_t end = clock();
+
+    // Calculate execution time in milliseconds
+    double cpu_time_ms =
+        ((double)(end - start) / CLOCKS_PER_SEC) * 1000.0;
+
+    // Print results
+    printf("CPU Vector Addition of 50000 elements\n");
+    printf("First result: %f\n", c[0]);
+    printf("CPU execution time: %.6f ms\n", cpu_time_ms);
+
     return 0;
 }

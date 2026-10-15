@@ -12,12 +12,14 @@ __global__ void vectorAdd(const float *A, const float *B, float *C, int numEleme
     }
 }
 
-int main() {
+int main(int argc, char* argv[]) {
+    bool cpu = (argc > 1) && (argv[1][0] == 'c');
+
     // Vector size and memory size
-    int numElements = 50000;
+    long int numElements = 50000000000;
     size_t size = numElements * sizeof(float);
     
-    printf("Vector addition of %d elements\n", numElements);
+    printf("Vector addition of %ld elements\n", numElements);
     
     // Allocate host memory
     float *h_A = (float *)malloc(size);
@@ -43,7 +45,7 @@ int main() {
     cudaMemcpy(d_B, h_B, size, cudaMemcpyHostToDevice);
     
     // Launch the CUDA kernel
-    int threadsPerBlock = 256;
+    int threadsPerBlock = 2048;
     int blocksPerGrid = (numElements + threadsPerBlock - 1) / threadsPerBlock;
     printf("CUDA kernel launch with %d blocks of %d threads\n", blocksPerGrid, threadsPerBlock);
     
@@ -52,7 +54,12 @@ int main() {
     cudaEventCreate(&stop);
 
     cudaEventRecord(start);
-    vectorAdd<<<blocksPerGrid, threadsPerBlock>>>(d_A, d_B, d_C, numElements);
+    if(cpu) {
+        for (int i = 0; i < numElements; i++) {
+            h_C[i] = h_A[i] + h_B[i];
+        }
+    }
+    else vectorAdd<<<blocksPerGrid, threadsPerBlock>>>(d_A, d_B, d_C, numElements);
     cudaEventRecord(stop);
 
     cudaEventSynchronize(stop);
@@ -73,7 +80,7 @@ int main() {
     }
     
     // Copy result back to host
-    cudaMemcpy(h_C, d_C, size, cudaMemcpyDeviceToHost);
+    if(!cpu) cudaMemcpy(h_C, d_C, size, cudaMemcpyDeviceToHost);
     
     // Verify the result
     for (int i = 0; i < numElements; ++i) {
