@@ -47,8 +47,24 @@ int main() {
     int blocksPerGrid = (numElements + threadsPerBlock - 1) / threadsPerBlock;
     printf("CUDA kernel launch with %d blocks of %d threads\n", blocksPerGrid, threadsPerBlock);
     
+    cudaEvent_t start, stop;
+    cudaEventCreate(&start);
+    cudaEventCreate(&stop);
+
+    cudaEventRecord(start);
     vectorAdd<<<blocksPerGrid, threadsPerBlock>>>(d_A, d_B, d_C, numElements);
-    
+    cudaEventRecord(stop);
+
+    cudaEventSynchronize(stop);
+
+    float milliseconds = 0;
+    cudaEventElapsedTime(&milliseconds, start, stop);
+
+    printf("GPU execution time: %f ms\n", milliseconds);
+
+    cudaEventDestroy(start);
+    cudaEventDestroy(stop);
+
     // Check for errors in kernel launch
     cudaError_t err = cudaGetLastError();
     if (err != cudaSuccess) {

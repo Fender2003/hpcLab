@@ -1,13 +1,15 @@
 # GPUs vs CPUs (lab 1: architecture and performance)
 The goal of this lab is to develop a deeper understanding of the fundamental architectural differences between GPUs and CPUs and to observe how these differences impact performance.
 
-## Tasks (system info)
-1. GPU architecture: ...
-2. No. SMs: ...
-3. No. SPs: ...
-4. CPU: ...
-5. No. threads CPU vs no. threads GPU: ...
 
+## Tasks (system info)
+reference: https://www.techpowerup.com/gpu-specs/rtx-pro-4000-blackwell-workstation.c4279
+1. GPU architecture: ... NVIDIA RTX PRO 4000 Blackwell (settings)
+2. No. SMs: ... 70
+3. No. SPs: ... 8960
+4. CPU: ... Intel® Xeon® w3-2525 × 16 (settings)
+5. No. threads CPU vs no. threads GPU: ... 16, 8960 
+ 
 ## Tasks (performance)
 1. Compile and run addition
 2. Measure execution time GPU (hint: `cudaEvent_t start, stop;` \n `cudaEventCreate(&start);`)
