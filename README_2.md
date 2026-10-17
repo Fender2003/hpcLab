@@ -175,12 +175,3 @@ The test passes when all five GPU counts match the CPU reference.
 
 Atomic operations are a common way to protect shared counters in parallel programs. Other approaches include per-block partial counts followed by a reduction, which can reduce contention when many threads update the same counter.
 
-## 7. Conclusion and What's Next
-
-This lab demonstrates the differences between CPU-oriented general-purpose execution and GPU-oriented parallel throughput.
-
-Vector addition illustrates how independent operations can be mapped to CUDA threads, while the performance measurements show the GPU's advantage for the tested large vector workloads. The race-condition exercise demonstrates why concurrent writes to shared state require synchronization and how `atomicAdd` protects a shared counter.
-
-Possible next steps include repeating measurements to quantify variability, recording exact results in CSV format, plotting speedups for every block size, and comparing kernel-only performance with end-to-end execution including memory transfers.
-
-Further experiments could explore memory bandwidth, GPU occupancy, thread scheduling, and how block size affects other parallel workloads.
