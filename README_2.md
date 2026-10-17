@@ -114,9 +114,9 @@ The following values are approximate visual estimates from the plot, not the ori
 
 Speedup is calculated as:
 
-\[
+$$
 \text{Speedup} = \frac{T_{\text{CPU}}}{T_{\text{GPU}}}
-\]
+$$
 
 A speedup greater than 1 means the GPU measurement is faster than the CPU measurement for the selected timing scope.
 
